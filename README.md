@@ -1,7 +1,8 @@
 # Italtecnica Sirio Universal for Home Assistant
 
 Local-polling custom integration for **Italtecnica Sirio Universal** frequency pump controllers
-(and most likely the higher-current **Sirio Universal XP**, which has the same web interface)
+(tested on a Sirio Universal; the higher-current **Sirio Universal XP** may work too, but
+has not been tested: reports welcome)
 (also sold as Uni-Fitt / Wilo Sirio) that have the Wi-Fi web interface
 (`/management.html`). No cloud and no extra hardware: Home Assistant talks to the
 controller's own web API, the same one its web page uses.
