@@ -14,7 +14,8 @@ description.
 
 * The exact addresses of the user's controller and Home Assistant are in `CLAUDE.local.md`
   (git-ignored, local only). Never commit them to the public repo.
-* Controller web page: `http://<controller>:8080/management.html` (user's LAN).
+* Controller web page: `http://<controller>/management.html` (port 80 by default; the user's
+  controller is reached through a NAT mapping on another port, see `CLAUDE.local.md`).
 * Home Assistant config share: `\\<ha-host>\config` (SMB). Deploy by copying
   `custom_components/sirio` into `config\custom_components\`, then restart Home Assistant
   (full restart). The Read/Write/Edit tools refuse UNC paths, but Bash (Git Bash) can read and

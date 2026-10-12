@@ -3,7 +3,7 @@
 DOMAIN = "sirio"
 MANUFACTURER = "Italtecnica"
 
-DEFAULT_PORT = 8080
+DEFAULT_PORT = 80  # the controller serves plain HTTP
 DEFAULT_NAME = "Sirio"
 DEFAULT_SCAN_INTERVAL = 10  # seconds; the controller's own web page polls every 200 ms
 MIN_SCAN_INTERVAL = 1

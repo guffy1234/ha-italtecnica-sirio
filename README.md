@@ -71,7 +71,7 @@ sensors any more: they are the parameters Pmax, Imax and nominal motor frequency
 * Home Assistant **2025.2 or newer** (uses `runtime_data`, `AddConfigEntryEntitiesCallback` and current config-flow APIs).
 * The logo/icon shown for the integration needs **Home Assistant 2026.3 or newer**
   (local `brand/` folder). Older versions just show a placeholder.
-* The controller reachable from Home Assistant over HTTP (default port 8080).
+* The controller reachable from Home Assistant over HTTP (port 80 by default).
 
 ## Install
 
@@ -79,7 +79,7 @@ sensors any more: they are the parameters Pmax, Imax and nominal motor frequency
    `config/custom_components/sirio/manifest.json`.
 2. Restart Home Assistant (a full restart; quick reload does not load new integrations).
 3. Settings -> Devices & services -> Add integration -> **Sirio Pump Controller**.
-   Enter the controller's IP, port (8080), a name and the update interval.
+   Enter the controller's IP, port (80 unless you changed it, e.g. behind NAT), a name and the update interval.
 
 HACS: add this repository as a *custom repository* of type *Integration*.
 
@@ -107,7 +107,7 @@ source (MAN disables the dry-running and pressure protections).
 
 ## Controller web API
 
-All requests are `POST`, form-encoded, to the controller (default `http://<ip>:8080`):
+All requests are `POST`, form-encoded, to the controller (default `http://<ip>`, port 80):
 
 | Request | Purpose |
 |---------|---------|
