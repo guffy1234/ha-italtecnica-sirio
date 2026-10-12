@@ -79,7 +79,13 @@ sensors any more: they are the parameters Pmax, Imax and nominal motor frequency
 * Home Assistant **2025.2 or newer** (uses `runtime_data`, `AddConfigEntryEntitiesCallback` and current config-flow APIs).
 * The logo/icon shown for the integration needs **Home Assistant 2026.3 or newer**
   (local `brand/` folder). Older versions just show a placeholder.
+* A Sirio Universal with the **Wi-Fi module** (the plug-in board below, built around an
+  Espressif ESP-WROOM-02), set up on your network so its web page `/management.html` opens.
 * The controller reachable from Home Assistant over HTTP (port 80 by default).
+
+<p align="center">
+  <img src="images/sirio-wifi-module.png" alt="Sirio Wi-Fi module (ESP-WROOM-02)" width="320">
+</p>
 
 ## Install
 
