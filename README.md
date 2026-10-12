@@ -5,6 +5,12 @@ Local-polling custom integration for **Italtecnica Sirio** pump controllers
 (`/management.html`). No cloud and no extra hardware: Home Assistant talks to the
 controller's own web API, the same one its web page uses.
 
+<p align="center">
+  <img src="images/sirio-universal.png" alt="Italtecnica Sirio Universal" height="320">
+  &nbsp;&nbsp;
+  <img src="images/sirio-universal-open.png" alt="Sirio Universal opened" height="320">
+</p>
+
 Everything shows up as **one device** with sensors, binary sensors and the
 controller's *Base Parameters* as settings (numbers, selects, switches).
 
