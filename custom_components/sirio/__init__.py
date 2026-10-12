@@ -6,9 +6,10 @@ from datetime import timedelta
 
 from homeassistant.const import CONF_HOST, CONF_PORT, CONF_SCAN_INTERVAL, Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 
 from .api import SirioClient
-from .const import DEFAULT_SCAN_INTERVAL
+from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
 from .coordinator import (
     SirioConfigEntry,
     SirioCoordinator,
@@ -27,6 +28,7 @@ PLATFORMS: list[Platform] = [
 
 async def async_setup_entry(hass: HomeAssistant, entry: SirioConfigEntry) -> bool:
     """Set up Sirio from a config entry."""
+    _remove_old_entities(hass, entry)
     client = SirioClient(hass, entry.data[CONF_HOST], entry.data[CONF_PORT])
 
     status = SirioCoordinator(hass, entry, client)
@@ -45,6 +47,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: SirioConfigEntry) -> boo
     )
     entry.async_on_unload(entry.add_update_listener(_async_options_updated))
     return True
+
+
+# Entities that earlier versions created: (platform, unique id suffix)
+REMOVED_ENTITIES = (
+    (Platform.BINARY_SENSOR, "stand_by"),  # replaced by the "Pump" switch
+)
+
+
+def _remove_old_entities(hass: HomeAssistant, entry: SirioConfigEntry) -> None:
+    """Drop registry entries of entities this version no longer provides."""
+    registry = er.async_get(hass)
+    for platform, key in REMOVED_ENTITIES:
+        entity_id = registry.async_get_entity_id(
+            platform, DOMAIN, f"{entry.entry_id}_{key}"
+        )
+        if entity_id:
+            registry.async_remove(entity_id)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: SirioConfigEntry) -> bool:

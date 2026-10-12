@@ -20,7 +20,7 @@ status icon on the controller's page. The controller only offers a toggle, so th
 reads the state first, toggles only if needed, and checks the state afterwards. Needs
 "Allow changing pump parameters" (see Options).
 
-**Binary sensors:** motor on, stand-by, error, external error.
+**Binary sensors:** motor on, error, external error.
 **Diagnostic binary sensors:** master, external enable, double set-point, pilot pump
 active, manual adjustment.
 

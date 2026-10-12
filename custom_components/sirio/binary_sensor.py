@@ -42,11 +42,6 @@ BINARY_SENSORS: tuple[SirioBinarySensorDescription, ...] = (
         value_fn=_flag("motorOn"),
     ),
     SirioBinarySensorDescription(
-        key="stand_by",
-        name="Stand-by",
-        value_fn=_flag("standBy"),
-    ),
-    SirioBinarySensorDescription(
         key="error",
         name="Error",
         device_class=BinarySensorDeviceClass.PROBLEM,
