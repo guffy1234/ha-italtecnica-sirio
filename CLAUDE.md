@@ -122,5 +122,8 @@ minimum Pmax-Pmin 0.3 bar. MAN command source disables dry-running and pressure 
   "Autoreset interval" (+1, then -1), with the user's approval.
 * Unknown: whether the controller wraps around at the ends or skips unused codes; the stepper
   aborts on anything unexpected.
-* Ideas: reconfigure flow for host/port, stand-by/run switch (key 011), advanced parameters
+* The "Pump" switch (run / stand-by via the key 011 toggle, `SirioClient.set_running`) has
+  **not** been tested live either: it reads `standBy` first, toggles once, then polls status
+  to confirm. Unknown what 011 does while the controller shows an error.
+* Ideas: reconfigure flow for host/port, advanced parameters
   with a login, Ukrainian/other translations, HACS release.

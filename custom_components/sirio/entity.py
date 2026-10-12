@@ -11,6 +11,15 @@ from .const import CONF_ALLOW_WRITE
 from .coordinator import SirioConfigEntry, SirioCoordinator, SirioParamCoordinator
 
 
+def ensure_changes_allowed(entry: SirioConfigEntry) -> None:
+    """Raise unless the user allowed changing the pump in the options."""
+    if not entry.options.get(CONF_ALLOW_WRITE, False):
+        raise HomeAssistantError(
+            "Changing the pump is turned off. Turn on 'Allow changing pump "
+            "parameters' in the Sirio integration options first."
+        )
+
+
 class SirioEntity(CoordinatorEntity[SirioCoordinator]):
     """Read-only values from the status data; one device, one coordinator."""
 
@@ -52,11 +61,7 @@ class SirioParamEntity(CoordinatorEntity[SirioParamCoordinator]):
 
     async def _async_write(self, raw: int) -> None:
         """Change the parameter to a raw value, if changes are allowed."""
-        if not self._entry.options.get(CONF_ALLOW_WRITE, False):
-            raise HomeAssistantError(
-                "Changing pump parameters is turned off. Turn on 'Allow changing "
-                "pump parameters' in the Sirio integration options first."
-            )
+        ensure_changes_allowed(self._entry)
         try:
             new = await self._data.client.set_param(self._index, raw)
         except SirioError as err:

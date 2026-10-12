@@ -15,6 +15,11 @@ temperature, active error.
 **Diagnostic sensors:** power-on hours, running hours, pump starts, and the
 lifetime counters for error codes E0-E13 (disabled by default; enable the ones you want).
 
+**Switch "Pump":** run / stand-by, the same as clicking the green ON / yellow STAND-BY
+status icon on the controller's page. The controller only offers a toggle, so the integration
+reads the state first, toggles only if needed, and checks the state afterwards. Needs
+"Allow changing pump parameters" (see Options).
+
 **Binary sensors:** motor on, stand-by, error, external error.
 **Diagnostic binary sensors:** master, external enable, double set-point, pilot pump
 active, manual adjustment.
@@ -82,7 +87,7 @@ Settings -> Devices & services -> Sirio -> Configure:
 
 * **Update interval**: 1-300 seconds, default 10. Status is read with one request per cycle.
   Also available as the *Update interval* diagnostic entity on the device.
-* **Allow changing pump parameters**: off by default. While off, the parameter entities
+* **Allow changing pump parameters**: off by default. While off, the Pump switch and the parameter entities
   are read-only and any attempt to change one raises an error. Turn it on to let Home
   Assistant change settings on the controller.
 

@@ -28,7 +28,7 @@
           "allow_parameter_changes": "Allow changing pump parameters"
         },
         "data_description": {
-          "allow_parameter_changes": "Off by default: the parameter entities (set-point, Imax, frequencies, ...) are read-only. Turn on to let Home Assistant change them on the controller."
+          "allow_parameter_changes": "Off by default: the Pump (run / stand-by) switch and the parameter entities (set-point, Imax, frequencies, ...) are read-only. Turn on to let Home Assistant change them on the controller."
         }
       }
     }

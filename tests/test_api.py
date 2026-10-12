@@ -94,6 +94,28 @@ async def main():
     await asyncio.sleep(0)
     assert await c.get_params([0]) == {0: 30}
     await write
+
+    # 9. run / stand-by: toggle (key 011) only when needed, then confirm
+    api.RUN_CHECK_DELAY = 0
+    class FakeRun:
+        def __init__(self, stand_by, works=True):
+            self.stand_by, self.works, self.toggles = stand_by, works, 0
+        async def post(self, path, data):
+            if data["key"] == "011":
+                self.toggles += 1
+                if self.works:
+                    self.stand_by ^= 1
+                return {"key": 11, "result": True}
+            return {"key": 1, "standBy": self.stand_by}
+    for stand_by, run, toggles in ((1, True, 1), (0, True, 0), (0, False, 1), (1, False, 0)):
+        r = FakeRun(stand_by); c = api.SirioClient(None, "h", 1); c._post = r.post
+        status = await c.set_running(run)
+        assert (status["standBy"] == 0) == run and r.toggles == toggles, (stand_by, run)
+    r = FakeRun(1, works=False); c = api.SirioClient(None, "h", 1); c._post = r.post
+    try:
+        await c.set_running(True); raise SystemExit("expected SirioError")
+    except api.SirioError:
+        assert r.toggles == 1          # never toggles a second time
     print("all stepping tests passed")
 
 asyncio.run(main())

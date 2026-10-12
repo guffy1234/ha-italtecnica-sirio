@@ -5,6 +5,7 @@ Endpoints used (the same ones the controller's own web page calls):
   POST /ajax/get-registers  key=002 index=N    read base parameter N
   POST /ajax/set-registers  key=007 index=N    parameter N one step up
   POST /ajax/set-registers  key=008 index=N    parameter N one step down
+  POST /ajax/set-registers  key=011            toggle run / stand-by (status icon)
 
 The controller has no "set to value" call: parameters are changed one step at
 a time, and every step returns the new value.
@@ -29,8 +30,15 @@ SET_URL = "/ajax/set-registers"
 
 MAX_STEPS = 60  # safety cap for one parameter change
 RETRY_DELAY = 0.5  # seconds before a failed parameter read is tried again
+RUN_CHECKS = 6  # status reads to confirm a run/stand-by change...
+RUN_CHECK_DELAY = 0.5  # ...this many seconds apart
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def _is_running(status: dict[str, Any]) -> bool:
+    """Run (the page's "ON") rather than stand-by."""
+    return status.get("standBy") == 0
 
 
 class SirioError(Exception):
@@ -47,6 +55,9 @@ class SirioClient:
         self._lock = asyncio.Lock()
         # Only one parameter change at a time.
         self._write_lock = asyncio.Lock()
+        # Only one run/stand-by change at a time (separate: it must not wait
+        # for a ~40 s parameter poll).
+        self._run_lock = asyncio.Lock()
 
     async def _post(self, path: str, data: dict[str, str]) -> dict[str, Any]:
         url = f"{self._base}{path}"
@@ -105,6 +116,26 @@ class SirioClient:
                         if attempt == 0:
                             await asyncio.sleep(RETRY_DELAY)
         return values
+
+    async def set_running(self, run: bool) -> dict[str, Any]:
+        """Put the pump in run (True) or stand-by (False); return the new status.
+
+        The controller only has a toggle (key=011, the status icon on its page),
+        so read the state first, toggle once only if needed, and read it back.
+        """
+        async with self._run_lock:
+            status = await self.get_status()
+            if _is_running(status) == run:
+                return status
+            await self._post(SET_URL, {"key": "011"})
+            for _ in range(RUN_CHECKS):
+                await asyncio.sleep(RUN_CHECK_DELAY)
+                status = await self.get_status()
+                if _is_running(status) == run:
+                    return status
+            raise SirioError(
+                f"The pump did not switch to {'run' if run else 'stand-by'}"
+            )
 
     async def _step_param(self, index: int, increment: bool) -> int:
         payload = await self._post(
