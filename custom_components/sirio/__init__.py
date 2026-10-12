@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
-from homeassistant.const import CONF_HOST, CONF_PORT, Platform
+from datetime import timedelta
+
+from homeassistant.const import CONF_HOST, CONF_PORT, CONF_SCAN_INTERVAL, Platform
 from homeassistant.core import HomeAssistant
 
 from .api import SirioClient
+from .const import DEFAULT_SCAN_INTERVAL
 from .coordinator import (
     SirioConfigEntry,
     SirioCoordinator,
@@ -46,5 +49,18 @@ async def async_unload_entry(hass: HomeAssistant, entry: SirioConfigEntry) -> bo
 
 
 async def _async_options_updated(hass: HomeAssistant, entry: SirioConfigEntry) -> None:
-    """Reload when the options change."""
-    await hass.config_entries.async_reload(entry.entry_id)
+    """Apply changed options without a reload.
+
+    The update interval goes straight to the status coordinator; the
+    "allow parameter changes" option is read on every write anyway.
+    """
+    status = entry.runtime_data.status
+    interval = timedelta(
+        seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    )
+    if status.update_interval != interval:
+        status.update_interval = interval
+        # Refreshing reschedules the next poll with the new interval.
+        await status.async_request_refresh()
+    # Entities showing an option (the update interval) pick up the new value.
+    status.async_update_listeners()

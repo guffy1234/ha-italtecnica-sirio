@@ -9,6 +9,7 @@ DEFAULT_SCAN_INTERVAL = 10  # seconds; the controller's own web page polls every
 MIN_SCAN_INTERVAL = 1
 MAX_SCAN_INTERVAL = 300
 PARAM_SCAN_INTERVAL = 300  # seconds; parameters rarely change, so read them slowly
+PARAM_RETRY_INTERVAL = 30  # seconds; sooner while some parameter has never been read
 REQUEST_TIMEOUT = 10  # seconds
 
 # Option: parameters are read-only unless the user explicitly allows changes.

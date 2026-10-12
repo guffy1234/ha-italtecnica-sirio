@@ -18,6 +18,7 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     MANUFACTURER,
+    PARAM_RETRY_INTERVAL,
     PARAM_SCAN_INTERVAL,
 )
 from .parameters import PARAM_INDEXES
@@ -83,7 +84,15 @@ class SirioParamCoordinator(DataUpdateCoordinator[dict[int, int]]):
         # A failed read keeps the previous value for that parameter. Merge into
         # the current data (not a copy taken before the reads), so a value set
         # by a parameter change is never replaced by an older one.
-        return {**(self.data or {}), **read}
+        values = {**(self.data or {}), **read}
+        # Never read yet: try again soon instead of showing nothing for 5 minutes.
+        missing = set(PARAM_INDEXES) - values.keys()
+        self.update_interval = timedelta(
+            seconds=PARAM_RETRY_INTERVAL if missing else PARAM_SCAN_INTERVAL
+        )
+        if missing:
+            _LOGGER.debug("Parameters not read yet: %s", sorted(missing))
+        return values
 
 
 @dataclass

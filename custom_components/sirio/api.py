@@ -28,6 +28,7 @@ GET_URL = "/ajax/get-registers"
 SET_URL = "/ajax/set-registers"
 
 MAX_STEPS = 60  # safety cap for one parameter change
+RETRY_DELAY = 0.5  # seconds before a failed parameter read is tried again
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -90,10 +91,19 @@ class SirioClient:
         values: dict[int, int] = {}
         async with self._write_lock:
             for index in indexes:
-                try:
-                    values[index] = await self.get_param(index)
-                except SirioError as err:
-                    _LOGGER.debug("Could not read parameter %s: %s", index, err)
+                # The controller is easily busy (e.g. its own page open in a
+                # browser polls it 5 times a second): try each read twice.
+                for attempt in range(2):
+                    try:
+                        values[index] = await self.get_param(index)
+                        break
+                    except SirioError as err:
+                        _LOGGER.debug(
+                            "Could not read parameter %s (try %s): %s",
+                            index, attempt + 1, err,
+                        )
+                        if attempt == 0:
+                            await asyncio.sleep(RETRY_DELAY)
         return values
 
     async def _step_param(self, index: int, increment: bool) -> int:

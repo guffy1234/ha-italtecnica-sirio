@@ -19,7 +19,12 @@ lifetime counters for error codes E0-E13 (disabled by default; enable the ones y
 **Diagnostic binary sensors:** master, external enable, double set-point, pilot pump
 active, manual adjustment.
 
-**Parameters** (entity category *Configuration*), read every 5 minutes and after each change:
+**Diagnostic number:** update interval (1-300 s, default 10): the same setting as in the
+options, applied at once. It belongs to Home Assistant, not the pump, so it can be changed
+even while "Allow changing pump parameters" is off.
+
+**Parameters** (entity category *Configuration*), read every 5 minutes and after each change
+(a parameter that could not be read yet is retried after 30 seconds):
 
 | Code | Entity | Type | Range / values |
 |------|--------|------|----------------|
@@ -76,6 +81,7 @@ HACS: add this repository as a *custom repository* of type *Integration*.
 Settings -> Devices & services -> Sirio -> Configure:
 
 * **Update interval**: 1-300 seconds, default 10. Status is read with one request per cycle.
+  Also available as the *Update interval* diagnostic entity on the device.
 * **Allow changing pump parameters**: off by default. While off, the parameter entities
   are read-only and any attempt to change one raises an error. Turn it on to let Home
   Assistant change settings on the controller.
