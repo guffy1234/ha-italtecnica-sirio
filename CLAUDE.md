@@ -12,11 +12,13 @@ description.
 
 ## Environment
 
-* Controller web page: `http://192.168.20.112:8080/management.html` (user's LAN).
-* Home Assistant config share: `\\192.168.20.101\config` (SMB). Deploy by copying
-  `custom_components/sirio` into `config\custom_components\`, then restart Home Assistant.
-  The Claude file bridge refuses UNC paths, so the user copies files themselves (or maps the
-  share to a drive letter and tells Claude which one).
+* The exact addresses of the user's controller and Home Assistant are in `CLAUDE.local.md`
+  (git-ignored, local only). Never commit them to the public repo.
+* Controller web page: `http://<controller>:8080/management.html` (user's LAN).
+* Home Assistant config share: `\\<ha-host>\config` (SMB). Deploy by copying
+  `custom_components/sirio` into `config\custom_components\`, then restart Home Assistant
+  (full restart). The Read/Write/Edit tools refuse UNC paths, but Bash (Git Bash) can read and
+  copy via `//<ha-host>/config/...`. Copy only when the user asks; the user restarts HA.
 * Target Home Assistant 2025.2+ (`AddConfigEntryEntitiesCallback`; Python 3.12+ syntax such as `type X = ...`,
   `ConfigEntry.runtime_data`, `OptionsFlow` without `__init__`).
 * Home Assistant is not installed in the sandbox: `tests/test_api.py` stubs it.
