@@ -8,6 +8,8 @@ controller's own web API, the same one its web page uses.
 Everything shows up as **one device** with sensors, binary sensors and the
 controller's *Base Parameters* as settings (numbers, selects, switches).
 
+![The Sirio device page in Home Assistant](images/device-page.png)
+
 ## Entities
 
 **Sensors:** pressure, frequency, current, voltage, board temperature, IGBT

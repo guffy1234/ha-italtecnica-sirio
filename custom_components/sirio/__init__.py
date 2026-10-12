@@ -7,6 +7,7 @@ from datetime import timedelta
 from homeassistant.const import CONF_HOST, CONF_PORT, CONF_SCAN_INTERVAL, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers.entity_platform import async_get_platforms
 
 from .api import SirioClient
 from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
@@ -28,7 +29,6 @@ PLATFORMS: list[Platform] = [
 
 async def async_setup_entry(hass: HomeAssistant, entry: SirioConfigEntry) -> bool:
     """Set up Sirio from a config entry."""
-    _remove_old_entities(hass, entry)
     client = SirioClient(hass, entry.data[CONF_HOST], entry.data[CONF_PORT])
 
     status = SirioCoordinator(hass, entry, client)
@@ -38,6 +38,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: SirioConfigEntry) -> boo
     entry.runtime_data = SirioData(client=client, status=status, params=params)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    _remove_old_entities(hass, entry)
 
     # Each parameter read takes ~1.7 s on the controller (~40 s for all of them),
     # so read them in the background: setup finishes as soon as the status is in,
@@ -49,21 +50,29 @@ async def async_setup_entry(hass: HomeAssistant, entry: SirioConfigEntry) -> boo
     return True
 
 
-# Entities that earlier versions created: (platform, unique id suffix)
-REMOVED_ENTITIES = (
-    (Platform.BINARY_SENSOR, "stand_by"),  # replaced by the "Pump" switch
-)
-
-
 def _remove_old_entities(hass: HomeAssistant, entry: SirioConfigEntry) -> None:
-    """Drop registry entries of entities this version no longer provides."""
+    """Drop registry entries of entities this version no longer provides.
+
+    Earlier versions had other entities (e.g. "Max current", "Max frequency",
+    "Stand-by"); without this they stay behind as unavailable. Runs after the
+    platforms are set up: an enabled entry that no platform added is stale.
+    Disabled entries are kept, since disabled entities are never added.
+    """
+    platforms = [
+        platform
+        for platform in async_get_platforms(hass, DOMAIN)
+        if platform.config_entry is entry
+    ]
+    if {platform.domain for platform in platforms} != set(PLATFORMS):
+        # A platform failed to set up: its entities are missing, not stale.
+        return
+    provided = {
+        entity_id for platform in platforms for entity_id in platform.entities
+    }
     registry = er.async_get(hass)
-    for platform, key in REMOVED_ENTITIES:
-        entity_id = registry.async_get_entity_id(
-            platform, DOMAIN, f"{entry.entry_id}_{key}"
-        )
-        if entity_id:
-            registry.async_remove(entity_id)
+    for reg_entry in er.async_entries_for_config_entry(registry, entry.entry_id):
+        if reg_entry.disabled_by is None and reg_entry.entity_id not in provided:
+            registry.async_remove(reg_entry.entity_id)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: SirioConfigEntry) -> bool:
