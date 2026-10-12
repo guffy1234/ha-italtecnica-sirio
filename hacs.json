@@ -1,0 +1,5 @@
+{
+  "name": "Sirio Pump Controller",
+  "homeassistant": "2025.2.0",
+  "render_readme": true
+}

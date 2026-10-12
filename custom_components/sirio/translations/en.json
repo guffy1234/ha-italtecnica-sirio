@@ -1,0 +1,36 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Sirio pump controller",
+        "description": "Enter the address of the controller's web interface (the page at /management.html).",
+        "data": {
+          "host": "Host / IP address",
+          "port": "Port",
+          "name": "Name",
+          "scan_interval": "Update interval (seconds, 1-300)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not read data from the controller. Check the address and port."
+    },
+    "abort": {
+      "already_configured": "This controller is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Sirio options",
+        "data": {
+          "scan_interval": "Update interval (seconds, 1-300)",
+          "allow_parameter_changes": "Allow changing pump parameters"
+        },
+        "data_description": {
+          "allow_parameter_changes": "Off by default: the parameter entities (set-point, Imax, frequencies, ...) are read-only. Turn on to let Home Assistant change them on the controller."
+        }
+      }
+    }
+  }
+}

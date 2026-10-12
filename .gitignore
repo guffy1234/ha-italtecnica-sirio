@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+tools/brand_preview.png
+
+# Manufacturer manuals (copyrighted, kept local only)
+docs/
