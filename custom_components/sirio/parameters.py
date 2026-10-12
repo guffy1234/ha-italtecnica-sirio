@@ -39,7 +39,7 @@ class NumberParam:
 
 
 # Ranges follow the Sirio Universal manual where it states them (working pressure
-# up to 8 bar, Imax 0.5-16 A (UI allows 30 A for the higher-current Universal XP), nominal frequency 50/60 Hz, correction +-5 Hz,
+# up to 8 bar, Imax 0.5-16 A, nominal frequency 50/60 Hz, correction +-5 Hz,
 # autoreset interval up to 240 min, autoreset tests 0-20). They are UI hints only; the controller enforces its own limits and the
 # integration stops with an error if a step is refused.
 NUMBER_PARAMS: tuple[NumberParam, ...] = (
@@ -98,7 +98,7 @@ NUMBER_PARAMS: tuple[NumberParam, ...] = (
         device_class=NumberDeviceClass.CURRENT,
         scale=0.1,
         min_value=0.5,
-        max_value=30,  # Universal: 16 A; the XP goes higher. The controller enforces its own.
+        max_value=16,  # Sirio Universal; widen if the Universal XP gets tested
     ),
     NumberParam(
         index=12,

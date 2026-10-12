@@ -49,7 +49,7 @@ even while "Allow changing pump parameters" is off.
 | 0.3 | Pressure limit | number | 0-10 bar |
 | 0.4 | Pmax 2 (set-point 2) | number | 0.5-8 bar |
 | 0.5 | Stop delta pressure | number | 0-8 bar |
-| 1.0 | Imax (max motor current) | number | 0.5-30 A (the controller enforces its own limit: 16 A on the Universal) |
+| 1.0 | Imax (max motor current) | number | 0.5-16 A |
 | 1.1 | Rotation direction (3-phase only) | select | `-->`, `<--` |
 | 1.2 | Minimum frequency | number | 10-60 Hz |
 | 1.3 | Stop frequency | number | 10-60 Hz |
