@@ -5,7 +5,8 @@ Project notes for Claude sessions working on this repository.
 ## What this is
 
 A Home Assistant custom integration (`custom_components/sirio`, domain `sirio`) for
-Italtecnica **Sirio** pump controllers with the Wi-Fi web interface. It polls the
+Italtecnica **Sirio Universal** frequency pump controllers (likely also the higher-current
+**Sirio Universal XP**, not verified) with the Wi-Fi web interface. It polls the
 controller's own web API locally and exposes one device with sensors, binary sensors and the
 controller's Base Parameters (number / select / switch). See `README.md` for the user-facing
 description.

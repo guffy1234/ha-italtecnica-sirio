@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Sirio pump controller",
+        "title": "Italtecnica Sirio Universal",
         "description": "Enter the address of the controller's web interface (the page at /management.html).",
         "data": {
           "host": "Host / IP address",

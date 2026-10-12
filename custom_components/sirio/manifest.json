@@ -1,6 +1,6 @@
 {
   "domain": "sirio",
-  "name": "Sirio Pump Controller",
+  "name": "Italtecnica Sirio Universal",
   "codeowners": ["@guffy1234"],
   "config_flow": true,
   "documentation": "https://github.com/guffy1234/ha-italtecnica-sirio",

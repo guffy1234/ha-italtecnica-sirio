@@ -47,7 +47,7 @@ class SirioCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             identifiers={(DOMAIN, entry.entry_id)},
             name=entry.title,
             manufacturer=MANUFACTURER,
-            model="Sirio",
+            model="Sirio Universal",
             configuration_url=(
                 f"http://{entry.data[CONF_HOST]}:{entry.data[CONF_PORT]}/management.html"
             ),

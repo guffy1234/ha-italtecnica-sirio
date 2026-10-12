@@ -1,6 +1,7 @@
-# Sirio Pump Controller for Home Assistant
+# Italtecnica Sirio Universal for Home Assistant
 
-Local-polling custom integration for **Italtecnica Sirio** pump controllers
+Local-polling custom integration for **Italtecnica Sirio Universal** frequency pump controllers
+(and most likely the higher-current **Sirio Universal XP**, which has the same web interface)
 (also sold as Uni-Fitt / Wilo Sirio) that have the Wi-Fi web interface
 (`/management.html`). No cloud and no extra hardware: Home Assistant talks to the
 controller's own web API, the same one its web page uses.
@@ -47,7 +48,7 @@ even while "Allow changing pump parameters" is off.
 | 0.3 | Pressure limit | number | 0-10 bar |
 | 0.4 | Pmax 2 (set-point 2) | number | 0.5-8 bar |
 | 0.5 | Stop delta pressure | number | 0-8 bar |
-| 1.0 | Imax (max motor current) | number | 0.5-16 A |
+| 1.0 | Imax (max motor current) | number | 0.5-30 A (the controller enforces its own limit: 16 A on the Universal) |
 | 1.1 | Rotation direction (3-phase only) | select | `-->`, `<--` |
 | 1.2 | Minimum frequency | number | 10-60 Hz |
 | 1.3 | Stop frequency | number | 10-60 Hz |
@@ -84,7 +85,7 @@ sensors any more: they are the parameters Pmax, Imax and nominal motor frequency
 1. Copy `custom_components/sirio` into your Home Assistant config folder, so you get
    `config/custom_components/sirio/manifest.json`.
 2. Restart Home Assistant (a full restart; quick reload does not load new integrations).
-3. Settings -> Devices & services -> Add integration -> **Sirio Pump Controller**.
+3. Settings -> Devices & services -> Add integration -> **Italtecnica Sirio Universal**.
    Enter the controller's IP, port (80 unless you changed it, e.g. behind NAT), a name and the update interval.
 
 HACS: add this repository as a *custom repository* of type *Integration*.
