@@ -91,6 +91,9 @@ minimum Pmax-Pmin 0.3 bar. MAN command source disables dry-running and pressure 
   every 5 min and immediately after a write; a single failed parameter read keeps the old value.
   `SirioClient.get_params` holds the write lock, so a parameter poll never reads (and stores)
   a value from the middle of a stepped write.
+* **Parameter reads are slow:** measured ~1.7 s per `key=002` read (status `key=001`: ~0.1 s),
+  so a full parameter poll takes ~40 s. Setup therefore does not wait for it (background task),
+  and a parameter change can wait up to ~40 s for a running poll to finish.
 * **Writes are stepped and verified** (`SirioClient.set_param`): read, then `007`/`008` until
   the target; abort on no change (limit), wrong direction (wrap), overshoot, or 60 steps.
   A failed write can stop part-way: the entity reads the value back and puts it in the error.

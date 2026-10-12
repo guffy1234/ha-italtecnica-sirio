@@ -32,13 +32,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: SirioConfigEntry) -> boo
     status = SirioCoordinator(hass, entry, client)
     await status.async_config_entry_first_refresh()
 
-    # Parameters are secondary: a failed first read must not block setup.
     params = SirioParamCoordinator(hass, entry, client)
-    await params.async_refresh()
-
     entry.runtime_data = SirioData(client=client, status=status, params=params)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+    # Each parameter read takes ~1.7 s on the controller (~40 s for all of them),
+    # so read them in the background: setup finishes as soon as the status is in,
+    # and the parameter entities fill in when the read completes.
+    entry.async_create_background_task(
+        hass, params.async_refresh(), f"{entry.title} parameters first read"
+    )
     entry.async_on_unload(entry.add_update_listener(_async_options_updated))
     return True
 
